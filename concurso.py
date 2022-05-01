@@ -6,13 +6,14 @@ import streamlit as st
 from datetime import datetime
 from pyairtable import Table
 import os
-import seaborn as sns
 
 api_key = os.getenv('AIRTABLE_API_KEY')
 
 table = Table(api_key=api_key, base_id='app89yIsvduofuVNb', table_name='tbl6krugpB1Uvlcpu')
 
 y_true = Table(api_key=api_key, base_id='app89yIsvduofuVNb', table_name='tblXYnOlzZ6yT5eCo')
+
+users = Table(api_key=api_key, base_id='app89yIsvduofuVNb', table_name='tblMaZ0Gkg7Xxe6aa')
 
 dtypes_leaderboard = {"user_name": "object",
                       "file_name": "object",
@@ -38,12 +39,20 @@ y_true_df['LABELS'] = y_true_df['LABELS'].astype(np.int8)
 
 shape_submit = (len(y_true_df['LABELS']), 1)
 
-user_name = st.text_input('Tu nombre')
+records = users.all()
+usuarios = pd.DataFrame.from_records((r['fields'] for r in records))
+usuarios = usuarios.set_index('indice')
+
+user_name = st.selectbox('Quién sos?', usuarios)
 file_name = st.text_input('El nombre que quieras darle')
 
 date = datetime.now()
 submit_name_date = user_name + '_' + file_name + '_' + str(date.strftime("%Y_%m_%d-%I:%M:%S_%p"))
 uploaded_file = st.file_uploader("Choose a file")
+
+#max_scoring_user_name = leaderboard[leaderboard['user_name'] == user_name]['score'].max()
+
+#max_ranking_user_name = leaderboard[(leaderboard['score'] == max_scoring_user_name) & (leaderboard['user_name'] == user_name)]['ranking'].max()
 
 if uploaded_file is not None:
 
@@ -59,9 +68,6 @@ if uploaded_file is not None:
 
                 scoring_f1 = f1_score(y_true_df['LABELS'],
                                       dataframe['LABELS'])
-
-                st.write('Su submit tiene un F1 de: ')
-                st.write(scoring_f1)
 
                 if len(file_name) == 0:
                      file_name = uploaded_file.name
@@ -84,6 +90,11 @@ if uploaded_file is not None:
 
                 submition_data['date'] = submition_data.get('date').isoformat()
                 submition_data['preds'] = str(dataframe['LABELS'].to_dict())
+
+                #current_ranking = leaderboard[leaderboard['submit_name_date'] == submit_name_date]['ranking'].max()
+
+                st.header('Tu submit tiene un F1 de: ')
+                st.header(round(scoring_f1, 3))
 
                 st.write('Leaderboard actualizado')
                 st.write(leaderboard[['ranking', 'user_name', 'file_name', 'date', 'score']])
