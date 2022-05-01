@@ -6,6 +6,7 @@ import streamlit as st
 from datetime import datetime
 from pyairtable import Table
 import os
+import seaborn as sns
 
 api_key = os.getenv('AIRTABLE_API_KEY')
 
