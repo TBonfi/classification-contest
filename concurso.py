@@ -41,13 +41,10 @@ def set_png_as_page_bg(png_file):
 class Builder():
     
     '''
-    Clase constructora del GUI de rules de Nuqlea
+    Clase constructora del GUI de competencias
     -----
     Args:
-    > rules_path: path al archivo de rules
-    > tipos_reglas_activas_path: path al archivo de reglas activas que contiene un mapeo del tipo {nombre_funcion_del_modelo : nombre_funcion_negocio},
-    este archivo se utiliza para mostrar en el frontend nombres de funciones más amenas para el usuario. 
-    Ejemplo {"select_multiple_attributes":"Filtrado por texto"}
+    > 
     '''
     
     def __init__(self):
