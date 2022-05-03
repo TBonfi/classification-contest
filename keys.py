@@ -1,5 +1,0 @@
-airtableKey='keyt8HuKslcokREuJ'
-base_id='app89yIsvduofuVNb'
-leaderboard_id='tbl6krugpB1Uvlcpu'
-ytrue_id='tblXYnOlzZ6yT5eCo'
-users_id='tblMaZ0Gkg7Xxe6aa'
