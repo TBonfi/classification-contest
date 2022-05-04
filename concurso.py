@@ -125,7 +125,7 @@ class Builder():
                               'file_name': file_name,
                               'date': date,
                               'submit_name_date': submit_name_date,
-                              'score': scoring_f1,
+                              'score': round(scoring_f1,3),
                               'real_filename': uploaded_file.name
                               }
             submition_data['date'] = submition_data.get('date').isoformat()
