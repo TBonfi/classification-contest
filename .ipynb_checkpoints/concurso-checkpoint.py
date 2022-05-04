@@ -12,7 +12,7 @@ from grid import render_grid
 
 
 
-st.set_page_config(page_title='Competencia', layout="wide", page_icon="📒")
+st.set_page_config(page_title='Competencia', layout="wide", page_icon="⚡")
 
 
 @st.cache(allow_output_mutation=True)
