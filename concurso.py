@@ -11,7 +11,7 @@ import os
 from grid import render_grid
 import matplotlib.pyplot as plt
 import seaborn as sns
-import keys
+# import keys
 
 
 st.set_page_config(page_title='Competencia', layout="wide", page_icon="⚡")
