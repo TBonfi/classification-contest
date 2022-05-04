@@ -1,5 +1,5 @@
 from numpy import int8
-from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
+from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, confusion_matrix
 import base64
 import copy
 import pandas as pd
@@ -9,7 +9,9 @@ from datetime import datetime
 from pyairtable import Table
 import os
 from grid import render_grid
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+import keys
 
 
 st.set_page_config(page_title='Competencia', layout="wide", page_icon="⚡")
@@ -65,6 +67,11 @@ class Builder():
         self.leaderboard_id = os.getenv('leaderboard_id')
         self.ytrue_id = os.getenv('ytrue_id')
         self.users_id = os.getenv('users_id')
+#         self.key = keys.airtableKey
+#         self.base_id = keys.base_id
+#         self.leaderboard_id = keys.leaderboard_id
+#         self.ytrue_id = keys.ytrue_id
+#         self.users_id = keys.users_id
         self.scoring_f1 = None
         
         
@@ -149,6 +156,10 @@ class Builder():
             
             delta = scoring_f1 - last_best_overal_f1
             
+            cf_matrix = confusion_matrix(self.y_true_df['LABELS'],
+                                  dataframe['LABELS'])
+            
+            
             if len(file_name) == 0:
                  file_name = uploaded_file.name
             submition_data = {'user_name': user_name,
@@ -160,8 +171,10 @@ class Builder():
                               }
             submition_data['date'] = submition_data.get('date').isoformat()
             submition_data['preds'] = str(dataframe['LABELS'].to_dict())
+            #Mandamos la información a airtable
             self.table.create(submition_data)
-            self.kpis(scoring_f1, scoring_recall, scoring_precision, scoring_roc, delta)
+            #Mostramos KPIs del submission
+            self.kpis(scoring_f1, scoring_recall, scoring_precision, scoring_roc, delta, cf_matrix)
 
         else:
             st.write(f'Che el tamaño no está bien, es {dataframe.shape} cuando tiene que ser {self.shape_submit}')
@@ -198,7 +211,7 @@ class Builder():
                 render_grid(st.session_state['leaderboard'])
     
     
-    def kpis(self, scoring_f1, scoring_recall, scoring_precision, scoring_roc, delta):
+    def kpis(self, scoring_f1, scoring_recall, scoring_precision, scoring_roc, delta, cf_matrix):
         '''
         Mostrar los KPIs de la submision
         -----
@@ -217,11 +230,29 @@ class Builder():
         col3.metric("Precision (weighted)",f"{round(scoring_precision,3)}")
         col4.metric("ROC AUC (weighted)",f"{round(scoring_roc,3)}")
         st.markdown('---')
-            
-
+        #Confusion Matrix
+        fig, axes = plt.subplots(1, 2, figsize=(15, 5), sharex=True)        
+        sns.heatmap(cf_matrix/np.sum(cf_matrix), annot=True, 
+            fmt='.2%', cmap='Blues', ax=axes[0])
+        axes[0].set_title('Confusion Matrix del submit en %\n\n');
+        axes[0].set_xlabel('\nPredicted Values')
+        axes[0].set_ylabel('Actual Values ');
+        ## Ticket labels - List must be in alphabetical order
+        axes[0].xaxis.set_ticklabels(['False','True'])
+        axes[0].yaxis.set_ticklabels(['False','True'])
+        sns.heatmap(cf_matrix, annot=True, cmap='Blues', fmt='d', ax=axes[1])
+        axes[1].set_title('Confusion Matrix del submit en totales\n\n');
+        axes[1].set_xlabel('\nPredicted Values')
+        axes[1].set_ylabel('Actual Values ');
+        ## Ticket labels - List must be in alphabetical order
+        axes[1].xaxis.set_ticklabels(['False','True'])
+        axes[1].yaxis.set_ticklabels(['False','True'])
+        st.pyplot(fig)
+        
+        
     def run_app(self):
         '''
-        Main function to run nuqlea API
+        Main para correr el GUI
         '''
         col1, col2, col3, col4 = st.columns(4)
         col2.image('./res/logo.png', width=550)
