@@ -17,12 +17,27 @@ st.set_page_config(page_title='Competencia', layout="wide", page_icon="⚡")
 
 @st.cache(allow_output_mutation=True)
 def get_base64_of_bin_file(bin_file):
+    '''
+    Desencodear archivos bin
+    -----
+    Args:
+    > bin_file: archivo a desencodear
+    -----
+    Output:
+    > Archivo desencodeado
+    '''
     with open(bin_file, 'rb') as f:
         data = f.read()
     return base64.b64encode(data).decode()
 
 
 def set_png_as_page_bg(png_file):
+    '''
+    Setear un png como background
+    -----
+    Args:
+    > png_file: imagen
+    '''
     bin_str = get_base64_of_bin_file(png_file)
     page_bg_img = '''
     <style>
@@ -42,9 +57,6 @@ class Builder():
     
     '''
     Clase constructora del GUI de competencias
-    -----
-    Args:
-    > 
     '''
     
     def __init__(self):
@@ -57,6 +69,9 @@ class Builder():
         
         
     def connect(self):
+        '''
+        Realizar la conección a la base de airtable
+        '''
         self.table = Table(api_key=self.key, base_id=self.base_id, table_name= self.leaderboard_id)
         self.y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id )
         self.users = Table(api_key=self.key, base_id=self.base_id, table_name=self.users_id)
@@ -65,6 +80,13 @@ class Builder():
         
 
     def load_data(self, reload):
+        '''
+        Cargar la data que se encuentra en la base de airtable
+        -----
+        Args:
+        > reload: si se setea a True, solo carga el leaderboard. Si se
+        setea a False, carga el y_true y usuarios también
+        '''
         records = self.table.all()
         leaderboard = pd.DataFrame.from_records((r['fields'] for r in records))
         leaderboard['date'] = pd.to_datetime(leaderboard['date'], format="%Y-%m-%dT%H:%M:%S.%fZ")
@@ -94,6 +116,14 @@ class Builder():
     
     
     def submit(self, uploaded_file, file_name, user_name):
+        '''
+        Submitir el archivo cargado para ver scoring
+        -----
+        Args:
+        > uploaded_file: archivo a sumitir
+        > file_name: nombre que se le da al archivo
+        > user_name: nombre del usuario que realizó el submit
+        '''
         try:
             dataframe = pd.read_csv(uploaded_file, header=None, names=['LABELS'], dtype={'LABELS': np.int8})
         except:
@@ -140,7 +170,7 @@ class Builder():
             
     def gui(self):    
         '''
-        Funtion to run rulesGUI
+        Función orquestadora
         '''
         #Load data
         self.connect()
@@ -169,6 +199,16 @@ class Builder():
     
     
     def kpis(self, scoring_f1, scoring_recall, scoring_precision, scoring_roc, delta):
+        '''
+        Mostrar los KPIs de la submision
+        -----
+        Args:
+        > scoring_f1: score del f1
+        > scoring_recall: score de recall
+        > scoring_precision: score de precision
+        > scoring_roc: score de auc roc
+        > delta: delta vs el max f1_score del leaderboard
+        '''
         st.markdown('---')
         st.subheader('KPIs del submit')
         col1, col2, col3, col4 = st.columns(4)
