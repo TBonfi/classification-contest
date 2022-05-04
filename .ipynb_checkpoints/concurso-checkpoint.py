@@ -8,8 +8,8 @@ import streamlit as st
 from datetime import datetime
 from pyairtable import Table
 import os
-import keys
 from grid import render_grid
+
 
 
 st.set_page_config(page_title='Competencia', layout="wide", page_icon="📒")
@@ -48,11 +48,11 @@ class Builder():
     '''
     
     def __init__(self):
-        self.key = keys.airtableKey
-        self.base_id = keys.base_id
-        self.leaderboard_id = keys.leaderboard_id
-        self.ytrue_id = keys.ytrue_id
-        self.users_id = keys.users_id
+        self.key = os.getenv('airtableKey')
+        self.base_id = os.getenv('base_id')
+        self.leaderboard_id = os.getenv('leaderboard_id')
+        self.ytrue_id = os.getenv('ytrue_id')
+        self.users_id = os.getenv('users_id')
         self.scoring_f1 = None
         
         
