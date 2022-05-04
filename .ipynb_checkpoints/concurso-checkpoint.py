@@ -172,10 +172,10 @@ class Builder():
         st.markdown('---')
         st.subheader('KPIs del submit')
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("F1 (micro)", f"{round(scoring_f1,3)}", delta=round(delta,3))
-        col2.metric("Recall (micro)",f"{round(scoring_recall,3)}")
-        col3.metric("Precision (micro)",f"{round(scoring_precision,3)}")
-        col4.metric("ROC AUC (micro)",f"{round(scoring_roc,3)}")
+        col1.metric("F1 (weighted)", f"{round(scoring_f1,3)}", delta=round(delta,3))
+        col2.metric("Recall (weighted)",f"{round(scoring_recall,3)}")
+        col3.metric("Precision (weighted)",f"{round(scoring_precision,3)}")
+        col4.metric("ROC AUC (weighted)",f"{round(scoring_roc,3)}")
         st.markdown('---')
             
 
