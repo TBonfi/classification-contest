@@ -11,7 +11,7 @@ import os
 from grid import render_grid
 import matplotlib.pyplot as plt
 import seaborn as sns
-# import keys
+import keys
 
 
 st.set_page_config(page_title='Competencia', layout="wide", page_icon="⚡")
@@ -62,16 +62,16 @@ class Builder():
     '''
     
     def __init__(self):
-        self.key = os.getenv('airtableKey')
-        self.base_id = os.getenv('base_id')
-        self.leaderboard_id = os.getenv('leaderboard_id')
-        self.ytrue_id = os.getenv('ytrue_id')
-        self.users_id = os.getenv('users_id')
-#         self.key = keys.airtableKey
-#         self.base_id = keys.base_id
-#         self.leaderboard_id = keys.leaderboard_id
-#         self.ytrue_id = keys.ytrue_id
-#         self.users_id = keys.users_id
+#         self.key = os.getenv('airtableKey')
+#         self.base_id = os.getenv('base_id')
+#         self.leaderboard_id = os.getenv('leaderboard_id')
+#         self.ytrue_id = os.getenv('ytrue_id')
+#         self.users_id = os.getenv('users_id')
+        self.key = keys.airtableKey
+        self.base_id = keys.base_id
+        self.leaderboard_id = keys.leaderboard_id
+        self.ytrue_id = keys.ytrue_id
+        self.users_id = keys.users_id
         self.scoring_f1 = None
         
         
@@ -132,7 +132,7 @@ class Builder():
         > user_name: nombre del usuario que realizó el submit
         '''
         try:
-            dataframe = pd.read_csv(uploaded_file, header=None, names=['LABELS'], dtype={'LABELS': np.int8})
+            dataframe = pd.read_json(uploaded_file, header=None, names=['LABELS'], dtype={'LABELS': np.int8})
         except:
             st.write('Che el formato no está bien, tiene que ser solo una tira de 1 y 0 sin nombre')
             
@@ -146,13 +146,13 @@ class Builder():
             dataframe['SUBMITION_NAME'] = submit_name_date
 
             scoring_f1         = f1_score(self.y_true_df['LABELS'],
-                                  dataframe['LABELS'], average='weighted')
+                                  dataframe['LABELS'], average='macro')
             scoring_recall     = recall_score(self.y_true_df['LABELS'],
-                                  dataframe['LABELS'], average='weighted')
+                                  dataframe['LABELS'], average='macro')
             scoring_precision  = precision_score(self.y_true_df['LABELS'],
-                                  dataframe['LABELS'], average='weighted')
+                                  dataframe['LABELS'], average='macro')
             scoring_roc        = roc_auc_score(self.y_true_df['LABELS'],
-                                  dataframe['LABELS'], average='weighted')
+                                  dataframe['LABELS'], average='macro')
             
             delta = scoring_f1 - last_best_overal_f1
             
@@ -225,10 +225,10 @@ class Builder():
         st.markdown('---')
         st.subheader('KPIs del submit')
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("F1 (weighted)", f"{round(scoring_f1,3)}", delta=round(delta,3))
-        col2.metric("Recall (weighted)",f"{round(scoring_recall,3)}")
-        col3.metric("Precision (weighted)",f"{round(scoring_precision,3)}")
-        col4.metric("ROC AUC (weighted)",f"{round(scoring_roc,3)}")
+        col1.metric("F1 (macro)", f"{round(scoring_f1,3)}", delta=round(delta,3))
+        col2.metric("Recall (macro)",f"{round(scoring_recall,3)}")
+        col3.metric("Precision (macro)",f"{round(scoring_precision,3)}")
+        col4.metric("ROC AUC (macro)",f"{round(scoring_roc,3)}")
         st.markdown('---')
         #Confusion Matrix
         fig, axes = plt.subplots(1, 2, figsize=(15, 5), sharex=True)        
