@@ -108,7 +108,7 @@ class Builder():
             y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id)
 
             temp = y_true.all(fields='LABELS')
-            temp = ast.literal_eval(temp[0]['fields']['LABELS'])
+            z = ast.literal_eval(temp[0]['fields']['LABELS'])
             y_true_df = pd.DataFrame(z.items()).set_index(0)
             y_true_df.columns = ['LABELS']
             y_true_df['LABELS'] = y_true_df['LABELS'].astype(np.int8)
