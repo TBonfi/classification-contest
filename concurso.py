@@ -103,9 +103,17 @@ class Builder():
         
         
         if reload == False:
-            records = self.y_true.all()
-            y_true_df = pd.DataFrame.from_records((r['fields'] for r in records))
-            y_true_df = y_true_df.sort_values(by='indice').reset_index(drop=True)
+
+            y_true = Table(api_key='keydvr4BpZO6pnSuu',
+                           base_id='app89yIsvduofuVNb',
+                           table_name='tblXYnOlzZ6yT5eCo')
+
+            temp = self.y_true.all(fields='LABELS')
+
+            exec(f"temp_dict={temp[0]['fields']['LABELS']}")
+
+            y_true_df = pd.DataFrame.from_dict(temp_dict, orient='index')
+            y_true_df.columns = ['LABELS']
             y_true_df['LABELS'] = y_true_df['LABELS'].astype(np.int8)
             self.y_true_df = y_true_df
 
