@@ -108,7 +108,7 @@ class Builder():
                            base_id='app89yIsvduofuVNb',
                            table_name='tblXYnOlzZ6yT5eCo')
 
-            temp = self.y_true.all(fields='LABELS')
+            temp = y_true.all(fields='LABELS')
 
             exec(f"temp_dict={temp[0]['fields']['LABELS']}")
 
