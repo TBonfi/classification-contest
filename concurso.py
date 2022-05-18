@@ -114,7 +114,7 @@ class Builder():
             y_true_df['LABELS'] = y_true_df['LABELS'].astype(np.int8)
             self.y_true_df = y_true_df
 
-            self.shape_submit = (len(self.y_true_df['LABELS']), 1)
+            self.shape_submit = self.y_true_df['LABELS'].shape
 
             records = self.users.all()
             usuarios = pd.DataFrame.from_records((r['fields'] for r in records))
