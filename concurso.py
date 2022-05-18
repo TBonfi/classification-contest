@@ -136,7 +136,7 @@ class Builder():
         > user_name: nombre del usuario que realizó el submit
         '''
         try:
-            dataframe = pd.read_json(uploaded_file, header=None, names=['LABELS'], dtype={'LABELS': np.int8})
+            dataframe = pd.read_csv(uploaded_file, header=None, names=['LABELS'], dtype={'LABELS': np.int8})
         except:
             st.write('Che el formato no está bien, tiene que ser solo una tira de 1 y 0 sin nombre')
             
