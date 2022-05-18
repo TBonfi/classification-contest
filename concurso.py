@@ -80,7 +80,7 @@ class Builder():
         Realizar la conección a la base de airtable
         '''
         self.table = Table(api_key=self.key, base_id=self.base_id, table_name= self.leaderboard_id)
-        self.y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id )
+        self.y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id)
         self.users = Table(api_key=self.key, base_id=self.base_id, table_name=self.users_id)
         
         
@@ -104,11 +104,9 @@ class Builder():
         
         if reload == False:
 
-#            y_true = Table(api_key='keydvr4BpZO6pnSuu',
-#                           base_id='app89yIsvduofuVNb',
-#                           table_name='tblXYnOlzZ6yT5eCo')
+            y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id)
 
-            temp = self.y_true.all(fields='LABELS')
+            temp = y_true.all(fields='LABELS')
 
             exec(f"temp_dict={temp[0]['fields']['LABELS']}")
 
