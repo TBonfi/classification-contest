@@ -11,6 +11,7 @@ import os
 from grid import render_grid
 import matplotlib.pyplot as plt
 import seaborn as sns
+import ast
 #import keys
 
 
@@ -107,10 +108,8 @@ class Builder():
             y_true = Table(api_key=self.key, base_id=self.base_id, table_name=self.ytrue_id)
 
             temp = y_true.all(fields='LABELS')
-
-            exec(f"temp_dict={temp[0]['fields']['LABELS']}")
-
-            y_true_df = pd.DataFrame.from_dict(temp_dict, orient='index')
+            temp = ast.literal_eval(temp[0]['fields']['LABELS'])
+            y_true_df = pd.DataFrame(z.items()).set_index(0)
             y_true_df.columns = ['LABELS']
             y_true_df['LABELS'] = y_true_df['LABELS'].astype(np.int8)
             self.y_true_df = y_true_df
